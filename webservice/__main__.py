@@ -1,10 +1,11 @@
 import os
 from aiohttp import web
 import gidgethub
-import routing, sansio
+from gidgethub import routing, sansio
 from gidgethub import aiohttp as gh_aiohttp
 
 routes = web.RouteTableDef()
+router = routing.Router()
 
 @router.register("issues", action = "opened")
 async def issue_opened_event(event, gh, *args, **kwargs):
