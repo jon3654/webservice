@@ -1,0 +1,39 @@
+#!/usr/bin/env python3
+import requests
+import json
+import sys
+
+# Function that authenticates the bot's user
+# and returns a Session object
+def authenticate():
+    # Reads the username
+    f = open('../gh_username.txt')
+    gh_username = f.read().strip() # strip() removes newline characters
+    f.close()
+
+    # Reads the user's secret token
+    f = open('../gh_token.txt')
+    gh_token = f.read().strip() # strip() removes newline characters
+    f.close()
+
+    gh_auth_url = 'https://api.github.com/user'
+    # Starts the GitHub session
+    gh_session = requests.Session()
+    # Authorizes the user
+    gh_session.auth = (gh_username, gh_token)
+    # Returns the session object to be used by other functions
+    return gh_session
+
+# Function that takes a Session object and gets a
+# list of the user's repos with it
+def list_repos(gh_session):
+    repos_url = 'https://api.github.com/user/repos'
+
+    repos = json.loads(gh_session.get(repos_url).text)
+    for repo in repos:
+        print(repo['name'])
+
+if __name__ == '__main__':
+    if sys.argv[1] == 'list':
+        if sys.argv[2] == 'repos':
+            list_repos(authenticate())
