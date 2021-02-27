@@ -6,16 +6,15 @@ import sys
 # Function that authenticates the bot's user
 # and returns a Session object
 def authenticate():
-    # Reads the username
+    # Reads the username from a file in the parent directory
     f = open('../gh_username.txt')
     gh_username = f.read().strip() # strip() removes newline characters
     f.close()
-
-    # Reads the user's secret token
+    # Reads the user's secret token from a file in the parent directory
     f = open('../gh_token.txt')
     gh_token = f.read().strip() # strip() removes newline characters
     f.close()
-
+    # The API call to authenticate the user
     gh_auth_url = 'https://api.github.com/user'
     # Starts the GitHub session
     gh_session = requests.Session()
@@ -27,13 +26,18 @@ def authenticate():
 # Function that takes a Session object and gets a
 # list of the user's repos with it
 def list_repos(gh_session):
+    # The URL to get the repo list from
     repos_url = 'https://api.github.com/user/repos'
-
+    # Loads json content as an array of dictionaries
     repos = json.loads(gh_session.get(repos_url).text)
+    # Iterates through the repos and prints their name
     for repo in repos:
         print(repo['name'])
 
+# Main function interprets the command line arguments
 if __name__ == '__main__':
+    # The user wants to list something -> gitbot list
     if sys.argv[1] == 'list':
+        # The user wants to list the user's repos -> gitbot list repos
         if sys.argv[2] == 'repos':
             list_repos(authenticate())
